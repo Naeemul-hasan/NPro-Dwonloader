@@ -6,6 +6,18 @@
 
 ---
 
+## 📥 সরাসরি ডাউনলোড লিঙ্ক (Download Links for Friends & Users)
+
+আপনার বন্ধুদের এই লিঙ্কগুলো শেয়ার করে সরাসরি ডাউনলোড করতে বলতে পারেন:
+
+| প্ল্যাটফর্ম | ডাউনলোড লিঙ্ক | বিবরণ |
+| :--- | :--- | :--- |
+| 📱 **Android Mobile** | [**🔗 Download Android APK**](https://github.com/Naeemul-hasan/NPro-Dwonloader/releases/latest) | সরাসরি যেকোনো অ্যান্ড্রয়েড ফোনে ইনস্টলযোগ্য `.apk` ফাইল |
+| 💻 **Windows PC** | [**🔗 Download Windows ZIP**](https://github.com/Naeemul-hasan/NPro-Dwonloader/releases/latest) | কোনো ইনস্টলেশন ছাড়াই সরাসরি রান করার উপযোগী পোর্টেবল `.exe` |
+| 🌐 **Official Releases** | [**🔗 View All Releases**](https://github.com/Naeemul-hasan/NPro-Dwonloader/releases) | অফিসিয়াল রিলিজ ও নতুন ভার্সন আপডেট পেজ |
+
+---
+
 ## 🌟 প্রধান বৈশিষ্ট্যসমূহ (Key Features)
 
 1. **⚡ হাইপার মাল্টি-থ্রেডেড ইঞ্জিন (IDM-লেভেল স্পিড)**:

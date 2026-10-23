@@ -1,0 +1,124 @@
+name: Release NPro Downloader (EXE & APK)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Build Windows EXE
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pyinstaller
+
+      - name: Build Standalone Windows EXE
+        shell: powershell
+        run: |
+          python -m PyInstaller --name=NPro-Downloader --noconfirm --onedir --windowed --icon=icon.ico --add-data "ui;ui" --collect-all webview --collect-all uvicorn --collect-all fastapi --collect-all starlette --collect-all websockets main.py
+          Copy-Item -Recurse -Force ui dist/NPro-Downloader/ui
+          Compress-Archive -Path dist/NPro-Downloader -DestinationPath NPro-Downloader-v2026-Windows.zip -Force
+
+      - name: Upload Windows Asset
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: NPro-Downloader-v2026-Windows.zip
+
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Accept Android SDK Licenses
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+      - name: Install Dependencies & Build APK
+        run: |
+          npm install
+          npx cap add android || true
+          mkdir -p android
+          echo "sdk.dir=$ANDROID_HOME" > android/local.properties
+          npx cap sync android
+          cd android
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk ../NPro-Downloader-v2026-Android.apk
+
+      - name: Upload Android Asset
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: NPro-Downloader-v2026-Android.apk
+
+  publish-release:
+    name: Publish GitHub Release
+    needs: [build-windows, build-android]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-release
+
+      - name: Download Android Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "NPro Downloader 2026 — Official Release"
+          body: |
+            ## ⚡ NPro Downloader 2026 — Official Public Release
+            
+            Welcome to the official 2026 release of **NPro Downloader**!
+            
+            ### 📥 Download Assets
+            - 📱 **Android Mobile (`.apk`)**: Download `NPro-Downloader-v2026-Android.apk` and install on any Android device.
+            - 💻 **Windows PC (`.zip`)**: Download `NPro-Downloader-v2026-Windows.zip`, extract, and run `NPro-Downloader.exe`!
+            
+            ### 🌟 Key Features:
+            - ⚡ **Hyper Multi-Threaded Engine**: Up to 32 parallel chunk streams for 10x download speed.
+            - 🎥 **Universal Social Media Downloader**: 4K/1080p video & 320kbps MP3 audio extractor for YouTube, Facebook, Instagram, TikTok.
+            - 🎨 **2026 Glassmorphism UI**: Ambient holographic aurora glow, live 60fps throughput velocity chart, and real-time segment activity tracker.
+            - 🎵 **In-App Media Player**: Instant video/audio preview player inside the application.
+          draft: false
+          prerelease: false
+          files: |
+            NPro-Downloader-v2026-Windows.zip
+            NPro-Downloader-v2026-Android.apk
