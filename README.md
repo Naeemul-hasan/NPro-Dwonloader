@@ -12,9 +12,8 @@
 
 | প্ল্যাটফর্ম | ডাউনলোড লিঙ্ক | বিবরণ |
 | :--- | :--- | :--- |
-| 📱 **Android Native Video Downloader** | [**🔗 Download Native Android APK**](https://github.com/Naeemul-hasan/NPro-Dwonloader/releases/latest) | **১০০% ইন-অ্যাপ নেটিভ ডাউনলোডার** — কোনো ওয়েবসাইট রিডাইরেক্ট বা বিজ্ঞাপন ছাড়াই সরাসরি YouTube, Facebook, Insta, TikTok থেকে 4K/1080p ও MP3 ডাউনলোড |
-| 💻 **Windows PC** | [**🔗 Download Windows ZIP**](https://github.com/Naeemul-hasan/NPro-Dwonloader/releases/latest) | কোনো ইনস্টলেশন ছাড়াই সরাসরি রান করার উপযোগী পোর্টেবল `.exe` |
-| 📱 **Android Lightweight App** | [**🔗 Download Lightweight APK**](https://github.com/Naeemul-hasan/NPro-Dwonloader/releases/latest) | ডিরেক্ট ফাইল ডাউনলোডের জন্য লাইটওয়েট ২০২৬ UI সংস্করণ |
+| 📱 **Android Mobile** | [**🔗 Download NPro-Downloader.apk**](https://github.com/Naeemul-hasan/NPro-Dwonloader/releases/latest) | ২০২৬ মডার্ন UI ও অ্যান্ড্রয়েড নেটিভ DownloadManager ইন্টিগ্রেশনসহ অফিসিয়াল APK (Zero Web Redirects) |
+| 💻 **Windows PC** | [**🔗 Download NPro-Downloader.zip**](https://github.com/Naeemul-hasan/NPro-Dwonloader/releases/latest) | কোনো ইনস্টলেশন ছাড়াই সরাসরি রান করার উপযোগী পোর্টেবল `.exe` |
 | 🌐 **Official Releases** | [**🔗 View All Releases**](https://github.com/Naeemul-hasan/NPro-Dwonloader/releases) | অফিসিয়াল রিলিজ ও নতুন ভার্সন আপডেট পেজ |
 
 ---

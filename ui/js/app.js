@@ -798,37 +798,18 @@ class PulseGetApp {
     this.resetNewModal();
     this.renderTaskList();
 
-    // Trigger download / resolver with ZERO external browser redirects
-    if (isSocial) {
-      // Clean In-App Native Intent: Sends stream directly to native downloader engine on the phone
-      const intentUrl = `intent:#Intent;action=android.intent.action.SEND;type=text/plain;S.android.intent.extra.TEXT=${encodeURIComponent(url)};end`;
+    // Trigger native download with ZERO external browser redirects
+    try {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => a.remove(), 1000);
+    } catch (_) {
       try {
-        window.location.href = intentUrl;
-      } catch (_) {
-        try {
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          setTimeout(() => a.remove(), 1000);
-        } catch (e) {
-          console.log('Stream triggered');
-        }
-      }
-    } else {
-      // Direct File: Native Android Download directly into /storage/emulated/0/Download
-      try {
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.target = '_blank';
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => a.remove(), 1000);
-      } catch (err) {
-        window.open(url, '_blank');
-      }
+        window.location.href = url;
+      } catch (e) {}
     }
 
     // Animate segments and progress on the card

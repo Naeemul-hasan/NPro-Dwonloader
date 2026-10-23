@@ -101,33 +101,27 @@ jobs:
         with:
           name: android-release
 
-      - name: Download Native Android yt-dlp APK
-        run: |
-          curl -L -o NPro-Downloader-v2026-Android-Native-yt-dlp.apk "https://github.com/JunkFood02/Seal/releases/download/v2.0.0-alpha.5/Seal-2.0.0-alpha.5-githubPreview-arm64-v8a-release.apk"
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: "NPro Downloader 2026 — Official Release"
           body: |
-            ## ⚡ NPro Downloader 2026 — Official Public Release
+            ## ⚡ NPro Downloader 2026 — Official Release
             
             Welcome to the official 2026 release of **NPro Downloader**!
             
             ### 📥 Download Assets
-            - 📱 **Android Native Video Downloader (`.apk`)**: Download `NPro-Downloader-v2026-Android-Native-yt-dlp.apk` for 100% in-app 4K/1080p/MP3 downloading with native embedded yt-dlp & FFmpeg (Zero external redirects, zero ads!).
+            - 📱 **Android Mobile (`.apk`)**: Download `NPro-Downloader-v2026-Android.apk` and install on any Android phone (Zero external redirects!).
             - 💻 **Windows PC (`.zip`)**: Download `NPro-Downloader-v2026-Windows.zip`, extract, and run `NPro-Downloader.exe`!
-            - 📱 **Android Lightweight App (`.apk`)**: Download `NPro-Downloader-v2026-Android.apk` for direct file downloads.
             
             ### 🌟 Key Features:
             - ⚡ **Hyper Multi-Threaded Engine**: Up to 32 parallel chunk streams for 10x download speed.
-            - 🎥 **Universal Social Media Downloader**: 4K/1080p video & 320kbps MP3 audio extractor for YouTube, Facebook, Instagram, TikTok.
             - 🎨 **2026 Glassmorphism UI**: Ambient holographic aurora glow, live 60fps throughput velocity chart, and real-time segment activity tracker.
+            - 📁 **Native Android DownloadManager**: Direct saving into `/storage/emulated/0/Download/`.
             - 🎵 **In-App Media Player**: Instant video/audio preview player inside the application.
           draft: false
           prerelease: false
           files: |
             NPro-Downloader-v2026-Windows.zip
-            NPro-Downloader-v2026-Android-Native-yt-dlp.apk
             NPro-Downloader-v2026-Android.apk
