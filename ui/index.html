@@ -311,7 +311,11 @@
           </div>
           <div class="field-block">
             <label>Save Location:</label>
-            <input type="text" id="inputSavePath" class="cyber-input" readonly>
+            <input type="text" id="inputSavePath" class="cyber-input" placeholder="/storage/emulated/0/Download">
+            <div class="path-quick-chips">
+              <button type="button" class="chip-btn" id="btnChipDefaultDownload">📁 Downloads</button>
+              <button type="button" class="chip-btn" id="btnChipNProDownload">📁 Downloads/NPro</button>
+            </div>
           </div>
         </div>
       </div>
@@ -355,7 +359,11 @@
       <div class="modal-card-body">
         <div class="field-block">
           <label>Default Save Directory</label>
-          <input type="text" id="settingSaveDir" class="cyber-input">
+          <input type="text" id="settingSaveDir" class="cyber-input" placeholder="/storage/emulated/0/Download">
+          <div class="path-quick-chips">
+            <button type="button" class="chip-btn" id="btnSettingChipDefault">📁 Default (/storage/emulated/0/Download)</button>
+            <button type="button" class="chip-btn" id="btnSettingChipNPro">📁 Downloads/NPro</button>
+          </div>
         </div>
         <div class="field-block">
           <label>Default Threads per Download</label>

@@ -47,6 +47,32 @@
   --transition-fast: 0.15s ease-out;
 }
 
+.path-quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.chip-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--neon-cyan);
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-family: var(--font-main);
+  font-weight: 500;
+}
+
+.chip-btn:hover, .chip-btn:active {
+  background: rgba(0, 242, 254, 0.15);
+  border-color: var(--neon-cyan);
+  color: #fff;
+}
+
 /* Cyberpunk Neon Theme */
 body.theme-cyberpunk {
   --bg-deep: #080612;
