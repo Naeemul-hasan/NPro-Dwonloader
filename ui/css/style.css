@@ -1388,6 +1388,31 @@ html, body {
 }
 
 @media (max-width: 768px) {
+  /* ⚡ Mobile Ultra-Smooth 60fps Optimization: Kill Heavy GPU Gaussian Blurs */
+  .aurora-container {
+    display: none !important;
+  }
+
+  body {
+    background: #070913 !important;
+  }
+
+  .app-header,
+  .quick-grab-strip,
+  .glass-panel,
+  .download-card,
+  .glass-modal-card,
+  .mobile-nav-bar {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: #0d1222 !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .download-card {
+    background: #11172b !important;
+  }
+
   .app-sidebar {
     display: none;
   }

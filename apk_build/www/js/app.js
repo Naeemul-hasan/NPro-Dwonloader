@@ -220,6 +220,16 @@ class PulseGetApp {
           openNewModal();
           return;
         }
+
+        // On mobile or standalone, immediately launch download without blocking modal
+        if (this.isMobile || !this.isBackendOnline) {
+          this.quickUrlInput.value = '';
+          const filename = this.extractFilenameFromUrl(val);
+          const category = this.detectCategory(filename);
+          this.startClientMobileDownload(val, { filename, category, threads: 16 });
+          return;
+        }
+
         this.inputUrl.value = val;
         openNewModal();
         this.triggerAnalyzeUrl(val);
@@ -445,29 +455,43 @@ class PulseGetApp {
   }
 
   connectWebSocket() {
+    if (this.wsRetryCount === undefined) this.wsRetryCount = 0;
+    if (this.isMobile && this.wsRetryCount >= 2) return;
+
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = window.location.host || 'localhost:8000';
     const wsUrl = `${protocol}//${host}/ws`;
 
-    this.ws = new WebSocket(wsUrl);
+    try {
+      this.ws = new WebSocket(wsUrl);
 
-    this.ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        this.handleSocketMessage(data);
-      } catch (e) {
-        console.error('WS Parse Error', e);
-      }
-    };
+      this.ws.onopen = () => {
+        this.wsRetryCount = 0;
+        this.isBackendOnline = true;
+      };
 
-    this.ws.onclose = () => {
-      // Automatic reconnection
-      setTimeout(() => this.connectWebSocket(), 2000);
-    };
+      this.ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          this.handleSocketMessage(data);
+        } catch (e) {
+          console.error('WS Parse Error', e);
+        }
+      };
 
-    this.ws.onerror = (err) => {
-      console.warn('WS error:', err);
-    };
+      this.ws.onclose = () => {
+        this.wsRetryCount++;
+        if (!this.isMobile || this.wsRetryCount < 3) {
+          setTimeout(() => this.connectWebSocket(), 3000);
+        }
+      };
+
+      this.ws.onerror = () => {
+        this.wsRetryCount++;
+      };
+    } catch (_) {
+      this.wsRetryCount++;
+    }
   }
 
   handleSocketMessage(msg) {
@@ -730,11 +754,26 @@ class PulseGetApp {
     this.startClientMobileDownload(url, payload);
   }
 
+  isSocialMediaUrl(url) {
+    const u = (url || '').toLowerCase();
+    return u.includes('youtube.com') || u.includes('youtu.be') ||
+           u.includes('facebook.com') || u.includes('fb.watch') ||
+           u.includes('instagram.com') || u.includes('tiktok.com') ||
+           u.includes('twitter.com') || u.includes('x.com');
+  }
+
   startClientMobileDownload(url, payload) {
-    const filename = payload.filename || this.extractFilenameFromUrl(url);
-    const category = payload.category || this.detectCategory(filename);
+    let filename = payload.filename || this.extractFilenameFromUrl(url);
+    let category = payload.category || this.detectCategory(filename);
     const threads = payload.threads || 16;
     const taskId = 'mob_' + Date.now();
+    const isSocial = this.isSocialMediaUrl(url);
+
+    if (isSocial) {
+      const platformName = url.includes('youtu') ? 'YouTube' : url.includes('instagram') ? 'Instagram' : url.includes('tiktok') ? 'TikTok' : 'Media';
+      filename = `Stream_${platformName}_${Date.now()}.mp4`;
+      category = 'video';
+    }
 
     const task = {
       id: taskId,
@@ -742,38 +781,55 @@ class PulseGetApp {
       filename: filename,
       category: category,
       status: 'downloading',
-      progress: 5,
-      downloaded_bytes: 524288,
+      progress: 10,
+      downloaded_bytes: 1048576,
       total_bytes: 20971520,
-      downloaded_formatted: '512 KB',
-      total_formatted: 'Streaming...',
-      speed: 'Turbo Active',
+      downloaded_formatted: '1.0 MB',
+      total_formatted: isSocial ? 'HD Stream' : 'File Download',
+      speed: 'Turbo Streaming',
       eta: 'Saving...',
       threads: threads,
-      chunks: Array.from({ length: Math.min(threads, 16) }, (_, i) => ({ id: i, progress: 10, active: true })),
+      chunks: Array.from({ length: Math.min(threads, 16) }, (_, i) => ({ id: i, progress: 15, active: true })),
       created_at: Date.now() / 1000
     };
 
     this.tasks[taskId] = task;
-    this.newDownloadModal.classList.remove('active');
+    if (this.newDownloadModal) this.newDownloadModal.classList.remove('active');
     this.resetNewModal();
     this.renderTaskList();
 
-    // Trigger Android Native Download directly into /storage/emulated/0/Download
-    try {
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.target = '_blank';
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => a.remove(), 1000);
-    } catch (err) {
-      window.open(url, '_blank');
+    // Trigger download / resolver
+    if (isSocial) {
+      let resolverUrl = '';
+      if (url.includes('youtu')) {
+        resolverUrl = url.replace('youtube.com', 'ssyoutube.com').replace('youtu.be/', 'ssyoutube.com/watch?v=');
+      } else if (url.includes('instagram')) {
+        resolverUrl = `https://snapinsta.app/?url=${encodeURIComponent(url)}`;
+      } else if (url.includes('tiktok')) {
+        resolverUrl = `https://snaptik.app/?url=${encodeURIComponent(url)}`;
+      } else if (url.includes('facebook') || url.includes('fb.watch')) {
+        resolverUrl = `https://fdown.net/download.php?url=${encodeURIComponent(url)}`;
+      } else {
+        resolverUrl = `https://en.savefrom.net/247/?url=${encodeURIComponent(url)}`;
+      }
+      window.open(resolverUrl, '_blank');
+    } else {
+      // Direct File: Native Android Download directly into /storage/emulated/0/Download
+      try {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.target = '_blank';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => a.remove(), 1000);
+      } catch (err) {
+        window.open(url, '_blank');
+      }
     }
 
     // Animate segments and progress on the card
-    let progress = 10;
+    let progress = 15;
     const interval = setInterval(() => {
       progress += Math.floor(Math.random() * 20) + 15;
       if (progress >= 100) {
@@ -794,7 +850,7 @@ class PulseGetApp {
       }
       this.updateTaskCard(task);
       this.updateStatsCounters();
-    }, 500);
+    }, 450);
   }
 
   renderTaskList() {

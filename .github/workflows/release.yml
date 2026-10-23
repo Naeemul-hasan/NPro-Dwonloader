@@ -69,6 +69,9 @@ jobs:
           mkdir -p android
           echo "sdk.dir=$ANDROID_HOME" > android/local.properties
           npx cap sync android
+          mkdir -p android/app/src/main/java/com/npro/downloader/
+          cp apk_build/MainActivity.java android/app/src/main/java/com/npro/downloader/MainActivity.java
+          cp apk_build/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
           cd android
           chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon
