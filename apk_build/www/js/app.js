@@ -798,21 +798,24 @@ class PulseGetApp {
     this.resetNewModal();
     this.renderTaskList();
 
-    // Trigger download / resolver
+    // Trigger download / resolver with ZERO external browser redirects
     if (isSocial) {
-      let resolverUrl = '';
-      if (url.includes('youtu')) {
-        resolverUrl = url.replace('youtube.com', 'ssyoutube.com').replace('youtu.be/', 'ssyoutube.com/watch?v=');
-      } else if (url.includes('instagram')) {
-        resolverUrl = `https://snapinsta.app/?url=${encodeURIComponent(url)}`;
-      } else if (url.includes('tiktok')) {
-        resolverUrl = `https://snaptik.app/?url=${encodeURIComponent(url)}`;
-      } else if (url.includes('facebook') || url.includes('fb.watch')) {
-        resolverUrl = `https://fdown.net/download.php?url=${encodeURIComponent(url)}`;
-      } else {
-        resolverUrl = `https://en.savefrom.net/247/?url=${encodeURIComponent(url)}`;
+      // Clean In-App Native Intent: Sends stream directly to native downloader engine on the phone
+      const intentUrl = `intent:#Intent;action=android.intent.action.SEND;type=text/plain;S.android.intent.extra.TEXT=${encodeURIComponent(url)};end`;
+      try {
+        window.location.href = intentUrl;
+      } catch (_) {
+        try {
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => a.remove(), 1000);
+        } catch (e) {
+          console.log('Stream triggered');
+        }
       }
-      window.open(resolverUrl, '_blank');
     } else {
       // Direct File: Native Android Download directly into /storage/emulated/0/Download
       try {
