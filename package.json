@@ -1,0 +1,14 @@
+{
+  "name": "npro-downloader",
+  "version": "1.0.0",
+  "description": "NPro Downloader 2026 — Ultra-Speed Download Manager",
+  "main": "main.py",
+  "scripts": {
+    "build:android": "cap sync android && cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/cli": "^6.2.0",
+    "@capacitor/core": "^6.2.0"
+  }
+}

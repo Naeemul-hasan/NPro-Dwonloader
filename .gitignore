@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller & Build artifacts
+build/
+dist/
+*.spec
+!NPro-Downloader.spec
+
+# Temporary downloads and segments
+.pulse_*
+*.tmp
+test_output/
+*.log
+bin/
+
+# Node & IDE
+node_modules/
+.vscode/
+.idea/
+.DS_Store

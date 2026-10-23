@@ -1,0 +1,50 @@
+name: Build NPro Downloader Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Set up Java JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Install Capacitor CLI & Android Platform
+      run: |
+        npm install -g @capacitor/cli @capacitor/core @capacitor/android
+        cd apk_build
+        npm init -y
+        npm install @capacitor/core @capacitor/android
+        npx cap add android
+
+    - name: Sync UI Assets to Android
+      run: |
+        cd apk_build
+        npx cap sync android
+
+    - name: Build Debug APK with Gradle
+      run: |
+        cd apk_build/android
+        chmod +x ./gradlew
+        ./gradlew assembleDebug
+
+    - name: Upload Generated APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NPro-Downloader-Android-APK
+        path: apk_build/android/app/build/outputs/apk/debug/app-debug.apk

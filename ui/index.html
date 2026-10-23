@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NPro Downloader — 2026 Ultra-Speed Download Manager</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js for 60fps live bandwidth visualizer -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Main Glassmorphic 2.0 Style -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="theme-cosmic">
+  
+  <!-- Animated Holographic Aurora Ambient Background -->
+  <div class="aurora-container">
+    <div class="aurora-orb aurora-cyan"></div>
+    <div class="aurora-orb aurora-purple"></div>
+    <div class="aurora-orb aurora-emerald"></div>
+    <div class="cyber-grid-overlay"></div>
+  </div>
+
+  <!-- Main Application Layout -->
+  <div class="app-container">
+    
+    <!-- Top Futuristic Glass Header -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="brand-logo-frame">
+          <img src="assets/app-logo.png" alt="NPro Logo" class="brand-logo-img">
+          <span class="logo-glow-pulse"></span>
+        </div>
+        <div class="brand-meta">
+          <div class="brand-title">
+            <span class="brand-highlight">NPRO</span> DOWNLOADER
+          </div>
+          <div class="brand-subtitle">
+            <span class="badge-version">2026 PRO ULTRA</span>
+            <span class="status-indicator-live">
+              <span class="live-dot"></span> 32x MULTI-THREAD READY
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Dynamic Bandwidth HUD Pill -->
+      <div class="header-hud-pill">
+        <div class="hud-stat-box">
+          <span class="hud-label">CURRENT VELOCITY</span>
+          <span class="hud-val text-cyan" id="globalSpeed">0.00 B/s</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-stat-box">
+          <span class="hud-label">ACTIVE PIPELINES</span>
+          <span class="hud-val text-emerald" id="activeTasksCount">0 Running</span>
+        </div>
+      </div>
+
+      <!-- Header Action Buttons -->
+      <div class="header-actions">
+        <button class="btn btn-glow-primary" id="btnOpenNewModal">
+          <i class="fa-solid fa-plus"></i>
+          <span>New Download</span>
+        </button>
+        <button class="btn btn-glass-icon" id="btnClearCompleted" title="Clear Completed">
+          <i class="fa-solid fa-broom"></i>
+        </button>
+        <button class="btn btn-glass-icon" id="btnOpenSettings" title="Settings & Themes">
+          <i class="fa-solid fa-sliders"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="workspace-layout">
+      
+      <!-- Modern Sidebar Navigation -->
+      <aside class="app-sidebar">
+        <div class="sidebar-block">
+          <span class="sidebar-category-title">CHANNELS</span>
+          <nav class="sidebar-nav">
+            <button class="nav-btn active" data-category="all">
+              <div class="nav-btn-icon"><i class="fa-solid fa-layer-group"></i></div>
+              <span class="nav-btn-text">All Tasks</span>
+              <span class="nav-count-badge" id="badgeAll">0</span>
+            </button>
+            <button class="nav-btn" data-category="downloading">
+              <div class="nav-btn-icon text-cyan"><i class="fa-solid fa-bolt-lightning"></i></div>
+              <span class="nav-btn-text">Active Streams</span>
+              <span class="nav-count-badge badge-active" id="badgeDownloading">0</span>
+            </button>
+            <button class="nav-btn" data-category="completed">
+              <div class="nav-btn-icon text-emerald"><i class="fa-solid fa-circle-check"></i></div>
+              <span class="nav-btn-text">Finished</span>
+              <span class="nav-count-badge" id="badgeCompleted">0</span>
+            </button>
+            <button class="nav-btn" data-category="video">
+              <div class="nav-btn-icon text-purple"><i class="fa-solid fa-film"></i></div>
+              <span class="nav-btn-text">Videos & 4K</span>
+              <span class="nav-count-badge" id="badgeVideo">0</span>
+            </button>
+            <button class="nav-btn" data-category="audio">
+              <div class="nav-btn-icon text-cyan"><i class="fa-solid fa-music"></i></div>
+              <span class="nav-btn-text">Music & MP3</span>
+              <span class="nav-count-badge" id="badgeAudio">0</span>
+            </button>
+            <button class="nav-btn" data-category="document">
+              <div class="nav-btn-icon text-amber"><i class="fa-solid fa-file-lines"></i></div>
+              <span class="nav-btn-text">Documents</span>
+              <span class="nav-count-badge" id="badgeDocument">0</span>
+            </button>
+            <button class="nav-btn" data-category="archive">
+              <div class="nav-btn-icon text-rose"><i class="fa-solid fa-box-archive"></i></div>
+              <span class="nav-btn-text">Archives & ISO</span>
+              <span class="nav-count-badge" id="badgeArchive">0</span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- Turbo Engine Diagnostics Card -->
+        <div class="engine-diagnostics-card">
+          <div class="diagnostics-header">
+            <i class="fa-solid fa-microchip"></i>
+            <span>TURBO CORE 2026</span>
+          </div>
+          <div class="diagnostics-grid">
+            <div class="diag-item">
+              <span class="diag-label">Max Concurrency</span>
+              <span class="diag-val" id="sidebarThreads">16 Chunks</span>
+            </div>
+            <div class="diag-item">
+              <span class="diag-label">Range Engine</span>
+              <span class="diag-val text-emerald">Active</span>
+            </div>
+            <div class="diag-item">
+              <span class="diag-label">FFmpeg Pipeline</span>
+              <span class="diag-val text-cyan">Ready</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Central Operations Dashboard -->
+      <main class="dashboard-viewport">
+        
+        <!-- Quick Paste & Grab Hero Strip -->
+        <div class="quick-grab-strip">
+          <div class="quick-input-wrap">
+            <i class="fa-solid fa-link quick-icon"></i>
+            <input type="url" id="quickUrlInput" placeholder="Quick paste direct link, YouTube, Facebook, TikTok, or file URL...">
+            <button class="btn btn-glass-sm" id="btnQuickPasteClipboard">
+              <i class="fa-solid fa-paste"></i> Paste
+            </button>
+          </div>
+          <button class="btn btn-glow-primary btn-quick-download" id="btnQuickStart">
+            <i class="fa-solid fa-bolt"></i> Download Now
+          </button>
+        </div>
+
+        <!-- Bandwidth Analytics & Velocity Card -->
+        <div class="glass-panel velocity-panel">
+          <div class="velocity-header">
+            <div class="velocity-title-group">
+              <div class="velocity-icon"><i class="fa-solid fa-chart-line"></i></div>
+              <div>
+                <h4>Real-Time Throughput Velocity</h4>
+                <p>Live 60fps Segmented Bandwidth Acceleration</p>
+              </div>
+            </div>
+            <div class="velocity-metrics-row">
+              <div class="metric-chip">
+                <span class="metric-label">PEAK SPEED</span>
+                <span class="metric-value text-cyan" id="statPeakSpeed">0.00 MB/s</span>
+              </div>
+              <div class="metric-chip">
+                <span class="metric-label">SESSION DATA</span>
+                <span class="metric-value text-purple" id="statTotalDownloaded">0.00 B</span>
+              </div>
+              <div class="metric-chip">
+                <span class="metric-label">STREAM THREADS</span>
+                <span class="metric-value text-emerald" id="statActiveThreads">0 Threads</span>
+              </div>
+            </div>
+          </div>
+          <div class="velocity-canvas-box">
+            <canvas id="speedChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Task Management Toolbar -->
+        <div class="task-filter-toolbar">
+          <div class="search-input-pill">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Filter downloads by filename or domain...">
+          </div>
+          <div class="toolbar-bulk-actions">
+            <button class="btn btn-glass-sm" id="btnResumeAll"><i class="fa-solid fa-play"></i> Resume All</button>
+            <button class="btn btn-glass-sm" id="btnPauseAll"><i class="fa-solid fa-pause"></i> Pause All</button>
+          </div>
+        </div>
+
+        <!-- Task Cards Feed -->
+        <div class="task-cards-container" id="taskList">
+          <!-- Empty State -->
+          <div class="empty-state-view" id="emptyState">
+            <div class="empty-halo">
+              <i class="fa-solid fa-cloud-arrow-down"></i>
+            </div>
+            <h3>Queue is Empty</h3>
+            <p>Paste any direct file, media URL, or streaming link above to launch turbo multi-threaded downloading.</p>
+            <button class="btn btn-glow-primary" id="btnEmptyAdd">
+              <i class="fa-solid fa-plus"></i> Add New Link
+            </button>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar (Android Layout) -->
+    <nav class="mobile-nav-bar">
+      <button class="mob-nav-btn active" data-category="all"><i class="fa-solid fa-layer-group"></i><span>All</span></button>
+      <button class="mob-nav-btn" data-category="downloading"><i class="fa-solid fa-bolt"></i><span>Active</span></button>
+      <button class="mob-fab-action" id="btnMobAdd"><i class="fa-solid fa-plus"></i></button>
+      <button class="mob-nav-btn" data-category="completed"><i class="fa-solid fa-check"></i><span>Done</span></button>
+      <button class="mob-nav-btn" id="btnMobSettings"><i class="fa-solid fa-sliders"></i><span>Settings</span></button>
+    </nav>
+
+  </div>
+
+  <!-- MODAL: Advanced Download & Link Analyzer -->
+  <div class="modal-backdrop" id="newDownloadModal">
+    <div class="glass-modal-card">
+      <div class="modal-card-header">
+        <div class="modal-title-group">
+          <div class="modal-icon-badge"><i class="fa-solid fa-bolt"></i></div>
+          <div>
+            <h3>Launch Turbo Download</h3>
+            <p>Direct HTTP Segmented Engine & Media Streamer</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="btnCloseNewModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-card-body">
+        <div class="field-block">
+          <label>URL / Media Link</label>
+          <div class="field-with-btn">
+            <input type="url" id="inputUrl" placeholder="https://example.com/file.zip or YouTube/FB/TikTok link..." autofocus>
+            <button class="btn btn-glass-sm" id="btnPasteClipboard"><i class="fa-solid fa-paste"></i> Paste</button>
+          </div>
+        </div>
+
+        <!-- Analyzer Loading -->
+        <div class="analyzer-loading-box hidden" id="analysisLoader">
+          <div class="cyber-spinner"></div>
+          <span>Inspecting server headers, ranges, and multimedia streams...</span>
+        </div>
+
+        <!-- Direct File Probe Result View -->
+        <div class="probe-card-view hidden" id="probeResult">
+          <div class="probe-type-avatar" id="probeTypeIcon"><i class="fa-solid fa-file"></i></div>
+          <div class="probe-info-text">
+            <div class="probe-name-label" id="probeFilename">File detected</div>
+            <div class="probe-tags-row">
+              <span class="tag tag-cyan" id="probeSize">-- MB</span>
+              <span class="tag tag-emerald" id="probeRanges"><i class="fa-solid fa-check"></i> Multi-Thread Ready</span>
+              <span class="tag tag-purple" id="probeCategory">File</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Media Stream Preview View (YouTube / Reels / TikTok) -->
+        <div class="media-stream-card hidden" id="mediaPreview">
+          <div class="media-poster-box">
+            <img id="mediaThumb" src="" alt="Poster">
+            <span class="media-timestamp" id="mediaDuration">00:00</span>
+          </div>
+          <div class="media-meta-box">
+            <h5 id="mediaTitle">Media Stream</h5>
+            <p id="mediaUploader">Channel / Artist</p>
+            <div class="format-selection-group">
+              <label>Select Stream Resolution / Format:</label>
+              <select id="selectFormat" class="cyber-select"></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thread & Path Configuration -->
+        <div class="config-grid">
+          <div class="field-block">
+            <label>Turbo Concurrency (Threads):</label>
+            <div class="slider-row">
+              <input type="range" id="rangeThreads" min="1" max="32" value="16" step="1">
+              <span class="slider-badge" id="threadsBadge">16 Chunks</span>
+            </div>
+          </div>
+          <div class="field-block">
+            <label>Save Location:</label>
+            <input type="text" id="inputSavePath" class="cyber-input" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-card-footer">
+        <button class="btn btn-glass-secondary" id="btnCancelAdd">Cancel</button>
+        <button class="btn btn-glow-primary" id="btnConfirmDownload">
+          <i class="fa-solid fa-bolt"></i> Start Turbo Download
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: In-App Media Player Preview -->
+  <div class="modal-backdrop" id="playerModal">
+    <div class="glass-modal-card modal-player-container">
+      <div class="modal-card-header">
+        <h4 id="playerTitle">Media Preview</h4>
+        <button class="modal-close-btn" id="btnClosePlayer"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-card-body player-screen-body">
+        <video id="inAppVideo" controls autoplay playsinline class="media-video-screen"></video>
+        <audio id="inAppAudio" controls autoplay class="media-audio-screen hidden"></audio>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Settings & Preferences -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="glass-modal-card">
+      <div class="modal-card-header">
+        <div class="modal-title-group">
+          <div class="modal-icon-badge"><i class="fa-solid fa-gear"></i></div>
+          <div>
+            <h3>Settings & Preferences</h3>
+            <p>Engine configuration and 2026 aesthetics</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="btnCloseSettings"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-card-body">
+        <div class="field-block">
+          <label>Default Save Directory</label>
+          <input type="text" id="settingSaveDir" class="cyber-input">
+        </div>
+        <div class="field-block">
+          <label>Default Threads per Download</label>
+          <select id="settingDefaultThreads" class="cyber-select">
+            <option value="4">4 Segments (Conservative)</option>
+            <option value="8">8 Segments (Balanced)</option>
+            <option value="16" selected>16 Segments (Turbo Recommended)</option>
+            <option value="24">24 Segments (High Bandwidth)</option>
+            <option value="32">32 Segments (Extreme Speed)</option>
+          </select>
+        </div>
+        <div class="field-block">
+          <label>Glassmorphism Theme</label>
+          <select id="settingTheme" class="cyber-select">
+            <option value="theme-cosmic">Cosmic Obsidian (Default 2026)</option>
+            <option value="theme-cyberpunk">Cyberpunk Neon Violet</option>
+            <option value="theme-emerald">Emerald Aurora Glow</option>
+          </select>
+        </div>
+        <div class="field-block">
+          <label class="toggle-checkbox-label">
+            <input type="checkbox" id="settingSoundEffects" checked>
+            <span class="custom-toggle-box"></span>
+            <span>Acoustic notification sound on download completion</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-card-footer">
+        <button class="btn btn-glass-secondary" id="btnCancelSettings">Close</button>
+        <button class="btn btn-glow-primary" id="btnSaveSettings">Save Preferences</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Chime -->
+  <audio id="completionSound" preload="auto">
+    <source src="https://cdn.freesound.org/previews/320/320655_5260872-lq.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Application Controller -->
+  <script src="js/app.js"></script>
+</body>
+</html>

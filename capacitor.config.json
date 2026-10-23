@@ -1,0 +1,15 @@
+{
+  "appId": "com.npro.downloader",
+  "appName": "NPro Downloader",
+  "webDir": "ui",
+  "bundledWebRuntime": false,
+  "server": {
+    "cleartext": true,
+    "androidScheme": "http"
+  },
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": true
+  }
+}

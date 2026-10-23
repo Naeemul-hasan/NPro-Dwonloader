@@ -1,0 +1,48 @@
+name: Build NPro Downloader Windows EXE
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build Windows Executable
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+        python -m pip install pyinstaller
+
+    - name: Build Standalone Windows EXE
+      run: |
+        python -m PyInstaller --name=NPro-Downloader --noconfirm --onedir --windowed --icon=icon.ico --add-data "ui;ui" --collect-all webview --collect-all uvicorn --collect-all fastapi --collect-all starlette --collect-all websockets main.py
+
+    - name: Copy UI Bundle to Output
+      shell: powershell
+      run: |
+        Copy-Item -Recurse -Force ui dist/NPro-Downloader/ui
+
+    - name: Archive EXE Folder to ZIP
+      shell: powershell
+      run: |
+        Compress-Archive -Path dist/NPro-Downloader -DestinationPath dist/NPro-Downloader-Windows.zip -Force
+
+    - name: Upload Windows EXE Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: NPro-Downloader-v2026-Windows-EXE
+        path: dist/NPro-Downloader-Windows.zip
